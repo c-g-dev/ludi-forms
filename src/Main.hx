@@ -7,6 +7,7 @@ class Main {
             {label: "Name", type: "text"},
             {label: "Age", type: "number"},
             {label: "Country", type: "dropdown", options: ["USA", "UK", "Canada"]},
+            {label: "Is Cool", type: "checkbox"},
             {label: "Submit", type: "button"}
         ];
 

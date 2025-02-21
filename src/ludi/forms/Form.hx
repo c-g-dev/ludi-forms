@@ -52,8 +52,8 @@ abstract Form(FormJQueryStructure) to JQuery from JQuery {
                     input.on("change", () -> form.handleChange(item.label));
                     return new JQuery('<div class="ludi-form ludi-form-control-container">').append(item.label).append(input);
                 },
-                getValue: (_, _, control) -> control.find("input").val() == "on",
-                setValue: (_, _, control, value) -> control.find("input").val(value ? "on" : "off")
+                getValue: (_, _, control) -> control.find("input").is(":checked"),
+                setValue: (_, _, control, value) -> control.find("input").prop("checked", value)
             },
             {
                 type: "number",

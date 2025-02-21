@@ -1,0 +1,18 @@
+{
+    "url" : "https://github.com/c-g-dev/ludi-forms",
+    "description":  "Simple Haxe JS extensible tree-form system",
+    "dependencies":  {
+                         "hx3compat":  ""
+                     },
+    "version":  "1.0.0",
+    "tags": [
+        "form", "ui", "javascript"           
+    ],
+    "classPath":  "src",
+    "name":  "ludi-forms",
+    "contributors":  [
+                         "cgdev"
+                     ],
+    "releasenote":  "Initial release",
+    "license":  "MIT"
+}
