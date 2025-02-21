@@ -1,0 +1,5 @@
+-cp src
+-lib hx3compat
+-main Main
+-js bin/main.js
+-dce full
