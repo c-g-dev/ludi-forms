@@ -5,7 +5,7 @@ class FormStyling {
     public static function addRenderer(renderer:FormItemRenderer):Void {
         @:privateAccess Form.renderers.push(renderer);
     }
-    
+
     public static function getDefaultCSS(): String {
         return '
             .ludi-form-form-container {
@@ -19,14 +19,14 @@ class FormStyling {
 
             .ludi-form-select {
                 appearance: none;
-                background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center !important;
+                background: url("data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>") no-repeat right 10px center !important;
                 padding-right: 30px !important;
                 cursor: pointer;
             }
 
 
             .ludi-form {
-                font-family: 'Segoe UI', Arial, sans-serif;
+                font-family: "Segoe UI", Arial, sans-serif;
             }
 
 
