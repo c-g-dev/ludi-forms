@@ -3,3 +3,7 @@
 -main Main
 -js bin/main.js
 -dce full
+
+--next
+
+-cmd toHaxelib.bat

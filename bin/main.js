@@ -15,35 +15,20 @@ Lambda.find = function(it,f) {
 var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
-	var schema = [{ label : "Name", type : "text"},{ label : "Age", type : "number"},{ label : "Country", type : "dropdown", options : ["USA","UK","Canada"]},{ label : "Is Cool", type : "checkbox"},{ label : "Submit", type : "button"}];
-	var otherSchema = [{ label : "Details", type : "text"}];
+	var _g = new haxe_ds_StringMap();
+	_g.h["USA"] = [{ label : "State", type : "text", placeholder : "Enter your state"}];
+	_g.h["UK"] = [{ label : "County", type : "text", placeholder : "Enter your county"}];
+	var schema = ludi_forms_FormSchema.fromDynamicArray([{ label : "Name", type : "text", placeholder : "Enter your name"},{ label : "Age", type : "number", min : 0, max : 150, step : 2},{ label : "Country", type : "dropdown", options : ["USA","UK","Canada"], subformSchema : _g},{ label : "Submit", type : "button"}]);
 	var form = ludi_forms_Form._new(schema);
 	var form1 = form;
-	ludi_forms_Form.onChange(form1,"Country",function() {
-		var val = ludi_forms_Form.getValues(form1).h["Country"].value;
-		if(val == "USA") {
-			ludi_forms_Form.setSubform(form1,"Country",otherSchema);
-		} else {
-			ludi_forms_Form.removeSubform(form1,"Country");
-		}
-	});
 	ludi_forms_Form.onChange(form1,"Submit",function() {
 		var tmp = ludi_forms_Form.getValues(form1);
-		console.log("src/Main.hx:29:",tmp == null ? "null" : haxe_ds_StringMap.stringify(tmp.h));
+		console.log("src/Main.hx:23:",tmp == null ? "null" : haxe_ds_StringMap.stringify(tmp.h));
 	});
 	var form2 = form;
 	$("body").append(form2);
 };
 Math.__name__ = true;
-var Reflect = function() { };
-Reflect.__name__ = true;
-Reflect.field = function(o,field) {
-	try {
-		return o[field];
-	} catch( _g ) {
-		return null;
-	}
-};
 var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
@@ -141,10 +126,18 @@ js_Boot.__string_rec = function(o,s) {
 		return String(o);
 	}
 };
+var ludi_forms_FormSchema = {};
+ludi_forms_FormSchema.fromDynamicArray = function(dyn) {
+	return dyn;
+};
 var ludi_forms_Form = {};
 ludi_forms_Form.initRenderers = function() {
 	ludi_forms_Form.renderers = [{ type : "text", renderer : function(form,item) {
+		var textItem = item;
 		var input = $("<input class=\"ludi-form ludi-form-text\" type=\"text\">");
+		if(textItem.placeholder != null) {
+			input.attr("placeholder",textItem.placeholder);
+		}
 		input.on("input",null,function() {
 			ludi_forms_Form.handleChange(form,item.label);
 		});
@@ -164,7 +157,17 @@ ludi_forms_Form.initRenderers = function() {
 	}, setValue : function(_,_1,control,value) {
 		control.find("input").prop("checked",value);
 	}},{ type : "number", renderer : function(form,item) {
+		var numItem = item;
 		var input = $("<input class=\"ludi-form ludi-form-number\" type=\"number\">");
+		if(numItem.min != null) {
+			input.attr("min",numItem.min == null ? "null" : "" + numItem.min);
+		}
+		if(numItem.max != null) {
+			input.attr("max",numItem.max == null ? "null" : "" + numItem.max);
+		}
+		if(numItem.step != null) {
+			input.attr("step",numItem.step == null ? "null" : "" + numItem.step);
+		}
 		input.on("input",null,function() {
 			ludi_forms_Form.handleChange(form,item.label);
 		});
@@ -174,21 +177,29 @@ ludi_forms_Form.initRenderers = function() {
 	}, setValue : function(_,_1,control,value) {
 		control.find("input").val(value);
 	}},{ type : "dropdown", renderer : function(form,item) {
-		var options = Reflect.field(item,"options");
-		var select = $("<select class=\"ludi-form ludi-form-select\" >");
-		if(options != null && ((options) instanceof Array)) {
+		var dropItem = item;
+		var select = $("<select class=\"ludi-form ludi-form-select\">");
+		if(dropItem.options != null && ((dropItem.options) instanceof Array)) {
 			var _g = 0;
-			var _g1 = options;
+			var _g1 = dropItem.options;
 			while(_g < _g1.length) {
 				var option = _g1[_g];
 				++_g;
-				select.append($("<option class=\"ludi-form ludi-form-option\" >").val(option).text(option));
+				select.append($("<option class=\"ludi-form ludi-form-option\">").val(option).text(option));
 			}
 		}
 		select.on("change",null,function() {
 			ludi_forms_Form.handleChange(form,item.label);
+			var fields = ludi_forms_util_StructuredJQuery.getFields(form);
+			var val = select.val();
+			if(Object.prototype.hasOwnProperty.call(fields.subforms.h,item.label)) {
+				ludi_forms_Form.removeSubform(form,item.label);
+			}
+			if(dropItem.subformSchema != null && Object.prototype.hasOwnProperty.call(dropItem.subformSchema.h,val)) {
+				ludi_forms_Form.setSubform(form,item.label,dropItem.subformSchema.h[val]);
+			}
 		});
-		return $("<div class=\"ludi-form ludi-form-control-container\" >").append(item.label).append(select);
+		return $("<div class=\"ludi-form ludi-form-control-container\">").append(item.label).append(select);
 	}, getValue : function(_,_1,control) {
 		return control.find("select").val();
 	}, setValue : function(_,_1,control,value) {
@@ -212,7 +223,8 @@ ludi_forms_Form._new = function(schema) {
 	var this1 = $("<div class=\"ludi-form ludi-form-form-container\">");
 	var controls = new haxe_ds_StringMap();
 	var changeCallbacks = new haxe_ds_StringMap();
-	ludi_forms_util_StructuredJQuery.setFields(this1,{ schema : schema, subforms : new haxe_ds_StringMap(), controls : controls, changeCallbacks : changeCallbacks});
+	var validators = new haxe_ds_StringMap();
+	ludi_forms_util_StructuredJQuery.setFields(this1,{ schema : schema, subforms : new haxe_ds_StringMap(), controls : controls, changeCallbacks : changeCallbacks, validators : validators});
 	var _g = 0;
 	while(_g < schema.length) {
 		var item = schema[_g];
