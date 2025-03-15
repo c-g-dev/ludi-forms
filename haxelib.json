@@ -4,7 +4,7 @@
     "dependencies":  {
                          "hx3compat":  ""
                      },
-    "version":  "1.0.0",
+    "version":  "1.1.0",
     "tags": [
         "form", "ui", "javascript"           
     ],
@@ -13,6 +13,6 @@
     "contributors":  [
                          "cgdev"
                      ],
-    "releasenote":  "Initial release",
+    "releasenote":  "Inline subforms + new options",
     "license":  "MIT"
 }
