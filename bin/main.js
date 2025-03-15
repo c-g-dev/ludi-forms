@@ -40,37 +40,14 @@ var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
 	var _g = new haxe_ds_StringMap();
-	_g.h["Explicit"] = [{ label : "Width", type : "number", min : 0, step : 1.0},{ label : "Height", type : "number", min : 0, step : 1.0}];
-	var _g1 = new haxe_ds_StringMap();
-	_g1.h["None"] = [];
-	_g1.h["FadeIn"] = [{ label : "Fade In Speed", type : "number", min : 0, step : 0.1}];
-	var schema = ludi_forms_FormSchema.fromDynamicArray([{ label : "Background Image", type : "text", placeholder : "Path to background image (e.g., assets/bg.png)"},{ label : "Background Opacity", type : "number", min : 0.0, max : 1.0, step : 0.1},{ label : "Size", type : "dropdown", options : ["Explicit","MatchBackground"], subformSchema : _g},{ label : "Font Family", type : "text", placeholder : "e.g., Arial"},{ label : "Font Size", type : "number", min : 1, step : 1},{ label : "Text Color", type : "text", placeholder : "Hex color (e.g., 0xFFFFFF)"},{ label : "Line Spacing", type : "number", min : 0, step : 0.1},{ label : "Position", type : "dropdown", options : ["Top","Center","Bottom"]},{ label : "Offset X", type : "number", step : 1},{ label : "Offset Y", type : "number", step : 1},{ label : "Text Effect", type : "dropdown", options : ["None","FadeIn"], subformSchema : _g1},{ label : "Text Speed", type : "number", min : 0, step : 1.0},{ label : "Has Name Box", type : "checkbox"},{ label : "Has Cursor", type : "checkbox"},{ label : "Submit", type : "button"}]);
-	var nameBoxSubformSchema = ludi_forms_FormSchema.fromDynamicArray([{ label : "Background Color", type : "text", placeholder : "Hex color (e.g., 0x333333)"},{ label : "Text Color", type : "text", placeholder : "Hex color (e.g., 0xFFFFFF)"},{ label : "Font Size", type : "number", min : 1, step : 1},{ label : "Padding", type : "group", subformSchema : [{ label : "Top", type : "number", min : 0, step : 1},{ label : "Bottom", type : "number", min : 0, step : 1},{ label : "Left", type : "number", min : 0, step : 1},{ label : "Right", type : "number", min : 0, step : 1}]},{ label : "Offset X", type : "number", step : 1},{ label : "Offset Y", type : "number", step : 1}]);
-	var _g = new haxe_ds_StringMap();
-	_g.h["AfterTextEnd"] = [];
-	_g.h["Specific"] = [{ label : "X", type : "number", step : 1},{ label : "Y", type : "number", step : 1}];
-	var cursorSubformSchema = ludi_forms_FormSchema.fromDynamicArray([{ label : "Sprite Path", type : "text", placeholder : "Path to cursor image"},{ label : "Size", type : "group", subformSchema : [{ label : "Width", type : "number", min : 0, step : 1},{ label : "Height", type : "number", min : 0, step : 1}]},{ label : "Positioning", type : "dropdown", options : ["AfterTextEnd","Specific"], subformSchema : _g},{ label : "Offset X", type : "number", step : 1},{ label : "Offset Y", type : "number", step : 1},{ label : "Animation Type", type : "dropdown", options : ["None","Bounce","Fade","Pulse"]},{ label : "Animation Speed", type : "number", min : 0, step : 0.1},{ label : "Is Visible", type : "checkbox"}]);
+	_g.h["USA"] = [{ label : "State", type : "text", placeholder : "Enter your state"}];
+	_g.h["UK"] = [{ label : "County", type : "text", placeholder : "Enter your county"}];
+	var schema = ludi_forms_FormSchema.fromDynamicArray([{ label : "Name", type : "text", placeholder : "Enter your name"},{ label : "Age", type : "number", min : 0, max : 150, step : 2},{ label : "Country", type : "dropdown", options : ["USA","UK","Canada"], subformSchema : _g},{ label : "Submit", type : "button"}]);
 	var form = ludi_forms_Form._new(schema);
 	var form1 = form;
-	ludi_forms_Form.onChange(form1,"Has Name Box",function() {
-		var val = ludi_forms_Form.getValues(form1).h["Has Name Box"].value;
-		if(val) {
-			ludi_forms_Form.setSubform(form1,"Has Name Box",nameBoxSubformSchema);
-		} else {
-			ludi_forms_Form.removeSubform(form1,"Has Name Box");
-		}
-	});
-	ludi_forms_Form.onChange(form1,"Has Cursor",function() {
-		var val = ludi_forms_Form.getValues(form1).h["Has Cursor"].value;
-		if(val) {
-			ludi_forms_Form.setSubform(form1,"Has Cursor",cursorSubformSchema);
-		} else {
-			ludi_forms_Form.removeSubform(form1,"Has Cursor");
-		}
-	});
 	ludi_forms_Form.onChange(form1,"Submit",function() {
 		var tmp = ludi_forms_Form.getValues(form1);
-		console.log("src/Main.hx:142:",tmp == null ? "null" : haxe_ds_StringMap.stringify(tmp.h));
+		console.log("src/Main.hx:23:",tmp == null ? "null" : haxe_ds_StringMap.stringify(tmp.h));
 	});
 	var form2 = form;
 	$("body").append(form2);
