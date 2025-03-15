@@ -3,6 +3,7 @@ package ludi.forms;
 import ludi.forms.util.StructuredJQuery;
 import js.jquery.JQuery;
 using Lambda;
+using StringTools;
 
 typedef FormSchemaItem = {
     label:String,
@@ -109,6 +110,8 @@ abstract Form(FormJQueryStructure) to JQuery from JQuery {
                 renderer: (form, item) -> {
                     var dropItem:DropdownSchemaItem = cast item;
                     var select = new JQuery('<select class="ludi-form ludi-form-select">');
+                    var blankOption = new JQuery('<option class="ludi-form ludi-form-option" value="">');
+                    select.append(blankOption);
                     if (dropItem.options != null && Std.is(dropItem.options, Array)) {
                         for (option in dropItem.options) {
                             select.append(new JQuery('<option class="ludi-form ludi-form-option">').val(option).text(option));
@@ -118,6 +121,9 @@ abstract Form(FormJQueryStructure) to JQuery from JQuery {
                         form.handleChange(item.label);
                         var fields = form.getFields();
                         var val = select.val();
+                        if (val != "" && blankOption.parent().length > 0) {
+                            blankOption.remove();
+                        }
                         if (fields.subforms.exists(item.label)) {
                             form.removeSubform(item.label);
                         }
@@ -128,7 +134,13 @@ abstract Form(FormJQueryStructure) to JQuery from JQuery {
                     return new JQuery('<div class="ludi-form ludi-form-control-container">').append(item.label).append(select);
                 },
                 getValue: (_, _, control) -> control.find("select").val(),
-                setValue: (_, _, control, value) -> control.find("select").val(value)
+                setValue: (_, _, control, value) -> {
+                    var select = control.find("select");
+                    if (value != "" && select.find('option[value=""]').length > 0) {
+                        select.find('option[value=""]').remove();
+                    }
+                    select.val(value);
+                }
             },
             {
                 type: "button",
@@ -194,12 +206,28 @@ abstract Form(FormJQueryStructure) to JQuery from JQuery {
         var subform = new Form(schema);
         fields.subforms.set(itemLabel, subform);
         
-        var itemDiv = this.find('div:contains("$itemLabel")');
-        itemDiv.append(subform);
+        var control = fields.controls.get(itemLabel);
+        if (control != null) {
+            control.append(subform);
+        } else {
+            var itemDiv = this.find('div.ludi-form-control-container').filter(function(index, element) {
+                var jel = new JQuery(element);
+                var contents = jel.contents();
+                var textContent = contents.filter(function(i, e) {
+                    return e.nodeType == 3; 
+                }).text().trim();
+                return textContent == itemLabel;
+            });
+            
+            if (itemDiv.length > 0) {
+                itemDiv.append(subform);
+            } else {
+                trace('Warning: Could not find control container for label "${itemLabel}"');
+            }
+        }
         
         this.setFields(fields);
     }
-
     public function removeSubform(itemLabel:String):Void {
         var fields = this.getFields();
         if (fields.subforms.exists(itemLabel)) {
