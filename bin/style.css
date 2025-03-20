@@ -118,6 +118,88 @@
     transform: scale(0.98);
 }
 
+.ludi-form-form-container .file-input-control {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background: #fafafa;
+    width: fit-content;
+    max-width: 300px;
+}
+
+.ludi-form-form-container .upload-btn {
+    padding: 6px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s ease;
+}
+
+.ludi-form-form-container .upload-btn:hover {
+    background: #0056b3;
+}
+
+.ludi-form-form-container .upload-btn:active {
+    background: #004085;
+}
+
+.ludi-form-form-container .file-name {
+    font-size: 14px;
+    color: #333;
+    padding: 4px 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.ludi-form-form-container .file-preview {
+    margin-top: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ludi-form-form-container .thumbnail {
+    object-fit: contain;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 4px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.ludi-form-form-container .file-icon {
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: #666;
+}
+
+.ludi-form-form-container .validation-failed .file-input-control {
+    border-color: #dc3545;
+    background: #fff5f5;
+}
+
+.ludi-form-form-container .validation-failed .file-name {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.ludi-form-form-container .file-input-control:hover {
+    border-color: #c0c0c0;
+    background: #f8f8f8;
+}
 
 .ludi-form-form-container .ludi-form-form-container {
     margin: 10px 0 0 20px;

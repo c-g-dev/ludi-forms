@@ -40,19 +40,52 @@ var Main = function() { };
 Main.__name__ = true;
 Main.main = function() {
 	var _g = new haxe_ds_StringMap();
-	_g.h["USA"] = [{ label : "State", type : "text", placeholder : "Enter your state"}];
-	_g.h["UK"] = [{ label : "County", type : "text", placeholder : "Enter your county"}];
-	var schema = ludi_forms_FormSchema.fromDynamicArray([{ label : "Name", type : "text", placeholder : "Enter your name"},{ label : "Age", type : "number", min : 0, max : 150, step : 2},{ label : "Country", type : "dropdown", options : ["USA","UK","Canada"], subformSchema : _g},{ label : "Submit", type : "button"}]);
+	_g.h["Explicit"] = [{ label : "Width", type : "number", min : 0, step : 1.0},{ label : "Height", type : "number", min : 0, step : 1.0}];
+	_g.h["MatchBackground"] = [];
+	var _g1 = new haxe_ds_StringMap();
+	_g1.h["None"] = [];
+	_g1.h["FadeIn"] = [{ label : "Fade In Speed", type : "number", min : 0, step : 0.1}];
+	var schema = ludi_forms_FormSchema.fromDynamicArray([{ label : "Background Image", type : "text", placeholder : "Path to background image (e.g., assets/bg.png)"},{ label : "Background Opacity", type : "number", min : 0.0, max : 1.0, step : 0.1},{ label : "Padding Top", type : "number", min : 0, step : 1},{ label : "Padding Bottom", type : "number", min : 0, step : 1},{ label : "Padding Left", type : "number", min : 0, step : 1},{ label : "Padding Right", type : "number", min : 0, step : 1},{ label : "Size", type : "dropdown", options : ["Explicit","MatchBackground"], subformSchema : _g},{ label : "Font Family", type : "text", placeholder : "e.g., Arial"},{ label : "Font Size", type : "number", min : 1, step : 1},{ label : "Text Color", type : "text", placeholder : "Hex color (e.g., 0xFFFFFF)"},{ label : "Line Spacing", type : "number", min : 0, step : 0.1},{ label : "Position", type : "dropdown", options : ["Top","Center","Bottom"]},{ label : "Offset X", type : "number", step : 1},{ label : "Offset Y", type : "number", step : 1},{ label : "Text Effect", type : "dropdown", options : ["None","FadeIn"], subformSchema : _g1},{ label : "Text Speed", type : "number", min : 0, step : 1.0},{ label : "Has Name Box", type : "checkbox"},{ label : "Has Cursor", type : "checkbox"},{ label : "Test File", type : "file"},{ label : "Submit", type : "button"}]);
+	var nameBoxSubform = ludi_forms_FormSchema.fromDynamicArray([{ label : "Name Box Background Color", type : "text", placeholder : "Hex color (e.g., 0x333333)"},{ label : "Name Box Text Color", type : "text", placeholder : "Hex color (e.g., 0xFFFFFF)"},{ label : "Name Box Font Size", type : "number", min : 1, step : 1},{ label : "Name Box Padding Top", type : "number", min : 0, step : 1},{ label : "Name Box Padding Bottom", type : "number", min : 0, step : 1},{ label : "Name Box Padding Left", type : "number", min : 0, step : 1},{ label : "Name Box Padding Right", type : "number", min : 0, step : 1},{ label : "Name Box Offset X", type : "number", step : 1},{ label : "Name Box Offset Y", type : "number", step : 1}]);
+	var _g = new haxe_ds_StringMap();
+	_g.h["AfterTextEnd"] = [];
+	_g.h["Specific"] = [{ label : "Cursor X", type : "number", step : 1},{ label : "Cursor Y", type : "number", step : 1}];
+	var cursorSubform = ludi_forms_FormSchema.fromDynamicArray([{ label : "Cursor Sprite Path", type : "text", placeholder : "Path to cursor image"},{ label : "Cursor Width", type : "number", min : 0, step : 1},{ label : "Cursor Height", type : "number", min : 0, step : 1},{ label : "Cursor Positioning", type : "dropdown", options : ["AfterTextEnd","Specific"], subformSchema : _g},{ label : "Cursor Offset X", type : "number", step : 1},{ label : "Cursor Offset Y", type : "number", step : 1},{ label : "Cursor Animation Type", type : "dropdown", options : ["None","Bounce","Fade","Pulse"]},{ label : "Cursor Animation Speed", type : "number", min : 0, step : 0.1},{ label : "Cursor Is Visible", type : "checkbox"}]);
 	var form = ludi_forms_Form._new(schema);
 	var form1 = form;
+	ludi_forms_Form.onChange(form1,"Has Name Box",function() {
+		var val = ludi_forms_Form.getValues(form1).h["Has Name Box"].value;
+		if(val == true) {
+			ludi_forms_Form.setSubform(form1,"Has Name Box",nameBoxSubform);
+		} else {
+			ludi_forms_Form.removeSubform(form1,"Has Name Box");
+		}
+	});
+	ludi_forms_Form.onChange(form1,"Has Cursor",function() {
+		var val = ludi_forms_Form.getValues(form1).h["Has Cursor"].value;
+		if(val == true) {
+			ludi_forms_Form.setSubform(form1,"Has Cursor",cursorSubform);
+		} else {
+			ludi_forms_Form.removeSubform(form1,"Has Cursor");
+		}
+	});
 	ludi_forms_Form.onChange(form1,"Submit",function() {
 		var tmp = ludi_forms_Form.getValues(form1);
-		console.log("src/Main.hx:23:",tmp == null ? "null" : haxe_ds_StringMap.stringify(tmp.h));
+		console.log("src/Main.hx:128:",tmp == null ? "null" : haxe_ds_StringMap.stringify(tmp.h));
 	});
 	var form2 = form;
 	$("body").append(form2);
 };
 Math.__name__ = true;
+var Reflect = function() { };
+Reflect.__name__ = true;
+Reflect.field = function(o,field) {
+	try {
+		return o[field];
+	} catch( _g ) {
+		return null;
+	}
+};
 var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
@@ -103,6 +136,21 @@ haxe_ds_StringMap.stringify = function(h) {
 		s += key + ' => ' + Std.string(h[key]);
 	}
 	return s + "]";
+};
+var haxe_io_Bytes = function(data) {
+	this.length = data.byteLength;
+	this.b = new Uint8Array(data);
+	this.b.bufferValue = data;
+	data.hxBytes = this;
+	data.bytes = this.b;
+};
+haxe_io_Bytes.__name__ = true;
+haxe_io_Bytes.ofData = function(b) {
+	var hb = b.hxBytes;
+	if(hb != null) {
+		return hb;
+	}
+	return new haxe_io_Bytes(b);
 };
 var haxe_iterators_ArrayIterator = function(array) {
 	this.current = 0;
@@ -187,9 +235,116 @@ var ludi_forms_FormSchema = {};
 ludi_forms_FormSchema.fromDynamicArray = function(dyn) {
 	return dyn;
 };
+var ludi_forms_FileInputControl = function(onChange) {
+	var _gthis = this;
+	this.filename = "";
+	this.bytes = null;
+	this.element = $("<div class=\"file-input-control\">");
+	var input = $("<input type=\"file\" style=\"display: none;\">");
+	var uploadBtn = $("<button class=\"upload-btn\">Upload File</button>");
+	var nameDisplay = $("<span class=\"file-name\">No file selected</span>");
+	var preview = $("<div class=\"file-preview\"></div>");
+	this.element.append(input).append(uploadBtn).append(nameDisplay).append(preview);
+	uploadBtn.on("click",null,function(e) {
+		e.preventDefault();
+		input.click();
+	});
+	input.on("change",null,function() {
+		var file = input.get(0).files[0];
+		if(file != null) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				var arrayBuffer = reader.result;
+				_gthis.bytes = haxe_io_Bytes.ofData(arrayBuffer);
+				_gthis.filename = file.name;
+				nameDisplay.text(_gthis.filename);
+				_gthis.updatePreview(preview,file.type,_gthis.bytes);
+				onChange();
+			};
+			reader.readAsArrayBuffer(file);
+		}
+	});
+};
+ludi_forms_FileInputControl.__name__ = true;
+ludi_forms_FileInputControl.prototype = {
+	updatePreview: function(preview,mimeType,bytes) {
+		preview.empty();
+		if(mimeType.indexOf("image/") == 0 && bytes != null) {
+			var img = $("<img class=\"thumbnail\">");
+			var blob = new Blob([bytes.b.bufferValue]);
+			var url = URL.createObjectURL(blob);
+			var tempImg = new Image();
+			tempImg.onload = function() {
+				var width = tempImg.width;
+				var height = tempImg.height;
+				var maxDimension = 100;
+				var scaledWidth = width;
+				var scaledHeight = height;
+				if(width > height) {
+					if(width > maxDimension) {
+						scaledWidth = maxDimension;
+						scaledHeight = Math.round(height * maxDimension / width);
+					}
+				} else if(height > maxDimension) {
+					scaledHeight = maxDimension;
+					scaledWidth = Math.round(width * maxDimension / height);
+				}
+				img.css({ "width" : scaledWidth + "px", "height" : scaledHeight + "px", "max-width" : "100px", "max-height" : "100px"});
+				URL.revokeObjectURL(url);
+				img.attr("src",URL.createObjectURL(blob));
+				preview.append(img);
+			};
+			tempImg.src = url;
+		} else {
+			var icon = $("<div class=\"file-icon\">📄</div>");
+			icon.css({ "width" : "100px", "height" : "100px", "font-size" : "50px", "display" : "flex", "align-items" : "center", "justify-content" : "center"});
+			preview.append(icon);
+		}
+	}
+	,setAccept: function(accept) {
+		this.element.find("input").attr("accept",accept);
+	}
+};
 var ludi_forms_Form = {};
 ludi_forms_Form.initRenderers = function() {
-	ludi_forms_Form.renderers = [{ type : "text", renderer : function(form,item) {
+	ludi_forms_Form.renderers = [{ type : "file", renderer : function(form,item) {
+		var fileItem = item;
+		var container = $("<div class=\"ludi-form ludi-form-control-container\">");
+		var fileControl = new ludi_forms_FileInputControl(function() {
+			ludi_forms_Form.handleChange(form,item.label);
+		});
+		if(fileItem.accept != null) {
+			fileControl.setAccept(fileItem.accept);
+		}
+		container.append(item.label).append(fileControl.element);
+		return container;
+	}, getValue : function(_,_1,control) {
+		var fileControl = control.find(".file-input-control").get(0);
+		if(fileControl != null) {
+			var ctrl = Reflect.field(fileControl,"__fileControl");
+			if(ctrl != null) {
+				return { filename : ctrl.filename, bytes : ctrl.bytes};
+			}
+		}
+		return null;
+	}, setValue : function(_,_1,control,value) {
+		var fileControl = control.find(".file-input-control").get(0);
+		if(fileControl != null && value != null) {
+			var ctrl = Reflect.field(fileControl,"__fileControl");
+			if(ctrl == null) {
+				ctrl = new ludi_forms_FileInputControl(function() {
+				});
+				fileControl["__fileControl"] = ctrl;
+				control.find(".file-input-control").replaceWith(ctrl.element);
+			}
+			ctrl.filename = value.filename;
+			ctrl.bytes = value.bytes;
+			ctrl.element.find(".file-name").text(value.filename);
+			if(value.bytes != null) {
+				ctrl.updatePreview(ctrl.element.find(".file-preview"),ludi_forms_Form.guessMimeType(value.filename),value.bytes);
+			}
+		}
+	}},{ type : "text", renderer : function(form,item) {
 		var textItem = item;
 		var input = $("<input class=\"ludi-form ludi-form-text\" type=\"text\">");
 		if(textItem.placeholder != null) {
@@ -282,6 +437,21 @@ ludi_forms_Form.initRenderers = function() {
 	}}];
 	ludi_forms_Form.hasInitialized = true;
 };
+ludi_forms_Form.guessMimeType = function(filename) {
+	var ext = HxOverrides.substr(filename,filename.lastIndexOf("."),null).toLowerCase();
+	switch(ext) {
+	case ".gif":
+		return "image/gif";
+	case ".jpeg":case ".jpg":
+		return "image/jpeg";
+	case ".pdf":
+		return "application/pdf";
+	case ".png":
+		return "image/png";
+	default:
+		return "application/octet-stream";
+	}
+};
 ludi_forms_Form._new = function(schema) {
 	if(!ludi_forms_Form.hasInitialized) {
 		ludi_forms_Form.initRenderers();
@@ -343,7 +513,7 @@ ludi_forms_Form.setSubform = function(this1,itemLabel,schema) {
 		if(itemDiv.length > 0) {
 			itemDiv.append(subform);
 		} else {
-			console.log("src/ludi/forms/Form.hx:225:","Warning: Could not find control container for label \"" + itemLabel + "\"");
+			console.log("src/ludi/forms/Form.hx:386:","Warning: Could not find control container for label \"" + itemLabel + "\"");
 		}
 	}
 	ludi_forms_util_StructuredJQuery.setFields(this1,fields);
